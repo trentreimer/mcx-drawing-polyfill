@@ -385,7 +385,7 @@
                             // FIX: Changed from a dashed line to a dotted line as requested
                             path: google.maps.SymbolPath.CIRCLE,
                             fillColor: options.strokeColor ?? '#1a73e8',
-                            fillOpacity: options.strokeOpacity ?? 0.7,
+                            fillOpacity: 0.7,
                             strokeOpacity: 0,
                             scale: 2
                         },
