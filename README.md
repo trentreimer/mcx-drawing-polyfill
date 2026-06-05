@@ -4,7 +4,7 @@ A standalone, zero-dependency drop-in replacement for the deprecated `google.map
 
 ## 🔀 Fork Modifications
 The following changes were made from the original `mcx-drawing-polyfill` project:
-* Added setOptions functionality to DrawingManager for custom styles
+* Added setOptions function to DrawingManager to support custom drawing styles
 
 ## ⚠️ Why is this needed?
 In August 2025, Google deprecated the `google.maps.drawing` library. It will be completely removed from the Maps JavaScript API in **May 2026**. 
