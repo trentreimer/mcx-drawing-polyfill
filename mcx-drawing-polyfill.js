@@ -170,6 +170,20 @@
             return this._currentMode;
         };
 
+        DrawingManager.prototype.setOptions = function (options)
+        {
+            if (typeof options === 'object') {
+                for (const key in options) {
+                    if (['markerOptions', 'polygonOptions', 'polylineOptions'].includes(key) && typeof options[key] === 'object') {
+                        this._options[key] = {
+                            ...(this._options[key] ?? {}),
+                            ...options[key]
+                        };
+                    }
+                }
+            }
+        };
+
         // ── Map attachment / detachment ────────────────────
 
         DrawingManager.prototype._attachToMap = function ()
@@ -318,13 +332,14 @@
         {
             var map = this._map;
             var coords = this._coords;
+            var options = this._options[this._activeMode + 'Options'] ?? {};
 
             this._activeShape = new google.maps.Polyline({
                 path: coords,
                 map: map,
-                strokeColor: '#1a73e8',
-                strokeWeight: 3,
-                strokeOpacity: 0.9,
+                strokeColor: options.strokeColor ?? '#1a73e8',
+                strokeWeight: options.strokeWeight ?? 3,
+                strokeOpacity: options.strokeOpacity ?? 0.9,
                 // FIX: Force Google Maps SVG renderer to use round joints instead of square caps.
                 // This completely eliminates sharp overlapping corners/horns on acute angles.
                 strokeLineJoin: 'round',
@@ -359,6 +374,8 @@
 
             if (!this._ghostLine)
             {
+                var options = this._options[this._currentMode + 'Options'] ?? {};
+                
                 this._ghostLine = new google.maps.Polyline({
                     path: ghostPath,
                     map: this._map,
@@ -367,8 +384,8 @@
                         icon: {
                             // FIX: Changed from a dashed line to a dotted line as requested
                             path: google.maps.SymbolPath.CIRCLE,
-                            fillColor: '#1a73e8',
-                            fillOpacity: 0.7,
+                            fillColor: options.strokeColor ?? '#1a73e8',
+                            fillOpacity: options.strokeOpacity ?? 0.7,
                             strokeOpacity: 0,
                             scale: 2
                         },
@@ -389,6 +406,7 @@
         {
             var coords = this._coords;
             var mode = this._currentMode;
+            var options = this._options[this._currentMode + 'Options'] ?? {};
             var self = this;
 
             if (coords.length === 0) 
@@ -405,8 +423,8 @@
                         path: google.maps.SymbolPath.CIRCLE,
                         fillColor: '#ffffff',
                         fillOpacity: 1,
-                        strokeColor: '#1a73e8',
-                        strokeWeight: 2,
+                        strokeColor: options.strokeColor ?? '#1a73e8',
+                        strokeWeight: options.strokeWeight ?? 2,
                         scale: 5
                     },
                     cursor: 'pointer', // Creates the "Hand" icon on hover automatically
@@ -511,15 +529,16 @@
 
             var self = this;
             var mockOverlay;
+            var options = this._options[mode + 'Options'] ?? {};
 
             if (mode === OverlayType.POLYLINE)
             {
                 mockOverlay = new google.maps.Polyline({
                     path: coords,
                     map: this._map,
-                    strokeColor: '#1a73e8',
-                    strokeWeight: 3,
-                    strokeOpacity: 0.9,
+                    strokeColor: options.strokeColor ?? '#1a73e8',
+                    strokeWeight: options.strokeWeight ?? 3,
+                    strokeOpacity: options.strokeOpacity ?? 0.9,
                     clickable: true
                 });
                 google.maps.event.trigger(self, 'overlaycomplete', {
@@ -533,11 +552,11 @@
                 mockOverlay = new google.maps.Polygon({
                     paths: [coords],
                     map: this._map,
-                    strokeColor: '#1a73e8',
-                    strokeWeight: 2,
-                    strokeOpacity: 0.9,
-                    fillColor: '#1a73e8',
-                    fillOpacity: 0.25,
+                    strokeColor: options.strokeColor ?? '#1a73e8',
+                    strokeWeight: options.strokeWeight ?? 2,
+                    strokeOpacity: options.strokeOpacity ?? 0.9,
+                    fillColor: options.fillColor ?? '#1a73e8',
+                    fillOpacity: options.fillOpacity ?? 0.25,
                     clickable: true
                 });
                 google.maps.event.trigger(self, 'overlaycomplete', {
