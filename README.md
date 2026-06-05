@@ -42,9 +42,8 @@ If you load Google Maps dynamically (via callback):
 <script>
 async function onMapsReady() {
     await import('mcx-drawing-polyfill.js');
-    // Now build the map/application...
+    // Now the map/application code...
 }
 </script>
-<!-- Do NOT include libraries=drawing in the script src -->
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=onMapsReady"></script>
 
