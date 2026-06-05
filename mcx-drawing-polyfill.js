@@ -333,7 +333,7 @@
         {
             var map = this._map;
             var coords = this._coords;
-            var options = this._options[this._activeMode + 'Options'] ?? {};
+            var options = this._options[this._currentMode + 'Options'] ?? {};
 
             this._activeShape = new google.maps.Polyline({
                 path: coords,
