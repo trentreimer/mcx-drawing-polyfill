@@ -3,7 +3,7 @@
  * * A zero-dependency, drop-in replacement for the deprecated google.maps.drawing library.
  * * Author: Robert McMahon
  * * Updates: Trent Reimer
- * Website: https://www.mapchannels.com/ 
+ * Website: https://www.mapchannels.com/
  * GitHub: https://github.com/mapchannels/google-maps-drawing-polyfill
  * Demo: https://mapchannels.github.io/google-maps-drawing-polyfill/
  * * Released under the MIT License.
@@ -250,7 +250,7 @@
                     return;
                 }
 
-                // FIX: Spatial Jitter - ignore clicks that are microscopic distances from the 
+                // FIX: Spatial Jitter - ignore clicks that are microscopic distances from the
                 // last node (less than ~1 meter) to prevent invisible micro-segments from forming.
                 var lastCoord = this._coords[this._coords.length - 1];
                 if (lastCoord)
@@ -308,7 +308,7 @@
             var minPoints = (mode === OverlayType.POLYGON) ? 3 : 2;
             if (this._coords.length >= minPoints)
             {
-                // FIX: Native google.maps.Polygon closes itself. If the last node matches the 
+                // FIX: Native google.maps.Polygon closes itself. If the last node matches the
                 // start node, it creates a sharp visual spike. We remove it here.
                 if (mode === OverlayType.POLYGON)
                 {
@@ -363,7 +363,7 @@
             if (!lastCoord) return;
 
             // FIX: If the mouse hasn't moved from the exact spot you clicked,
-            // hide the ghost line. A zero-length line has no angle, which causes 
+            // hide the ghost line. A zero-length line has no angle, which causes
             // the Google Maps renderer to draw a crooked "spike" artifact!
             if (lastCoord.equals(cursorLatLng))
             {
@@ -376,23 +376,13 @@
             if (!this._ghostLine)
             {
                 var options = this._options[this._currentMode + 'Options'] ?? {};
-                
+
                 this._ghostLine = new google.maps.Polyline({
                     path: ghostPath,
                     map: this._map,
-                    strokeOpacity: 0, // The main solid stroke must be hidden for dots to work
-                    icons: [{
-                        icon: {
-                            // FIX: Changed from a dashed line to a dotted line as requested
-                            path: google.maps.SymbolPath.CIRCLE,
-                            fillColor: options.strokeColor ?? '#1a73e8',
-                            fillOpacity: 0.7,
-                            strokeOpacity: 0,
-                            scale: 2
-                        },
-                        offset: '0',
-                        repeat: '4px'
-                    }],
+                    strokeColor: options.strokeColor ?? '#1a73e8',
+                    strokeWeight: options.strokeWeight ?? 3,
+                    strokeOpacity: options.strokeOpacity ?? 0.7,
                     clickable: false,
                     zIndex: 201
                 });
@@ -403,20 +393,20 @@
             }
         };
 
-        DrawingManager.prototype._updateFinishingNode = function () 
+        DrawingManager.prototype._updateFinishingNode = function ()
         {
             var coords = this._coords;
             var mode = this._currentMode;
             var options = this._options[this._currentMode + 'Options'] ?? {};
             var self = this;
 
-            if (coords.length === 0) 
+            if (coords.length === 0)
             {
                 if (this._finishingMarker) this._finishingMarker.setVisible(false);
                 return;
             }
 
-            if (!this._finishingMarker) 
+            if (!this._finishingMarker)
             {
                 this._finishingMarker = new google.maps.Marker({
                     map: this._map,
@@ -443,13 +433,13 @@
                 });
             }
 
-            if (mode === OverlayType.POLYLINE) 
+            if (mode === OverlayType.POLYLINE)
             {
                 // For Polylines, the finishing node lives on the LAST clicked point
                 this._finishingMarker.setPosition(coords[coords.length - 1]);
                 this._finishingMarker.setVisible(true);
             }
-            else if (mode === OverlayType.POLYGON) 
+            else if (mode === OverlayType.POLYGON)
             {
                 // For Polygons, the finishing node lives on the FIRST point to close the shape.
                 // We only show it once a line segment actually exists.
@@ -540,7 +530,8 @@
                     strokeColor: options.strokeColor ?? '#1a73e8',
                     strokeWeight: options.strokeWeight ?? 3,
                     strokeOpacity: options.strokeOpacity ?? 0.9,
-                    clickable: true
+                    zIndex: options.zIndex ?? 0,
+                    clickable: true,
                 });
                 google.maps.event.trigger(self, 'overlaycomplete', {
                     type: OverlayType.POLYLINE,
@@ -558,7 +549,8 @@
                     strokeOpacity: options.strokeOpacity ?? 0.9,
                     fillColor: options.fillColor ?? '#1a73e8',
                     fillOpacity: options.fillOpacity ?? 0.25,
-                    clickable: true
+                    zIndex: options.zIndex ?? 0,
+                    clickable: true,
                 });
                 google.maps.event.trigger(self, 'overlaycomplete', {
                     type: OverlayType.POLYGON,
